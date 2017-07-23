@@ -16,10 +16,6 @@ than conventional trading strategies based on rules set by humans.
 Investment firms have adopted machine learning in recent years rapidly, 
 even some firms have started replacing humans with A.I. to make investment decisions.
 
-References:
-
-- http://fortune.com/2017/03/30/blackrock-robots-layoffs-artificial-intelligence-ai-hedge-fund/
-- https://seekingalpha.com/article/4083754-superior-portfolio-roi-artificially-intelligent-algorithms
 
 ### Problem Statement
 
@@ -60,7 +56,7 @@ Download the CSV file for each (GE, S&P 500, Nikkei 225, Apple, Toyota)
 ### Solution Statement
 
 From the data set of yahoo finance. Predict the closing price of a target day based on the 
-historical data up to the previous day. 
+historical data up to the previous day of the target day.
 
 References:
 - Machine Learning for Trading: https://www.udacity.com/course/machine-learning-for-trading--ud501
@@ -68,22 +64,55 @@ References:
 
 ### Benchmark Model
 
+I try to use a kind of Recurrent Neural Network (RNN), called Long Short Term Memory (LSTM) from Keras library for benchmark model. RNN is a deep learning algorithm that has a "memory"
+to remember / store the information about what has been calculated previously.
 
+LSTM networks have memory blocks that are connected through layers, and it can choose what it remembers and can decide to forget, so it can adjust how much of memory it should pass to next layer.
 
+Since I use the time series of data of stock prices and try to predict the price,
+LSTM looks good fits for this project.
+
+I am interested in using Deep Learning and have never used LSTM and Keras library, so
+this could be great practice to get my hands on it.
 
 ### Evaluation Metrics
 
 To determine how accurate the prediction is, we analyze the difference between 
 the predicted and the actual adjusted close price. Smaller the difference indicates better 
-accuracy.
+accuracy. By visualize the predicted price and the actual price, it can tell how close the 
+prediction is clearly.
+
 
 ### Project Design
 
-Use `numpy`, `pandas`, `sklearn`, `matplotlib`
+I'll probably use following tech stack:
+- Python 2.7 (Required)
+- Numpy
+- Pandas
+- Sklearn
+- Matplotlib
+- Tensorflow / Keras
+- Python notebook
 
-Load Data from CSV file
-Train the model
-Test the model
-Improve / Tune up
-Result
-Conclusion
+**Steps**
+
+1: Load Data from CSV file and prepare the data for training and testing
+
+2: Train / test the model, and visualize log the result
+
+3: Improve / Tune up some parameters for improvement and experiment if it needs
+
+4: Result / Conclusion
+
+
+References:
+
+- http://fortune.com/2017/03/30/blackrock-robots-layoffs-artificial-intelligence-ai-hedge-fund/
+- https://seekingalpha.com/article/4083754-superior-portfolio-roi-artificially-intelligent-algorithms
+- http://colah.github.io/posts/2015-08-Understanding-LSTMs/
+- http://machinelearningmastery.com/time-series-prediction-with-deep-learning-in-python-with-keras/
+- http://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/
+- http://www.jakob-aungiers.com/articles/a/LSTM-Neural-Network-for-Time-Series-Prediction
+- https://www.freelancermap.com/freelancer-tips/11865-trend-prediction-with-lstm-rnns-using-keras-tensorflow-in-3-steps]
+- https://medium.com/@TalPerry/deep-learning-the-stock-market-df853d139e02
+- http://www.naun.org/main/NAUN/mcs/2017/a042002-041.pdf
