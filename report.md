@@ -16,32 +16,17 @@ than conventional trading strategies based on rules set by humans.
 Investment firms have adopted machine learning in recent years rapidly, 
 even some firms have started replacing humans with A.I. to make investment decisions.
 
-In this project, simply I experimented Deep Learning (A kind of Machine Learning techniques)
-to predict stock prices.
-
-
-```
-In this section, look to provide a high-level overview of the project in layman’s terms. Questions to ask yourself when writing this section:
-- _Has an overview of the project been provided, such as the problem domain, project origin, and related datasets or input data?_
-- _Has enough background information been given so that an uninformed reader would understand the problem domain and following problem statement?_
-```
+In this project, simply I experimented to use Deep Learning to predict stock prices.
 
 ### Problem Statement
 
 There is no easy way to predict stock prices accurately 
 and no method is perfect since there are many factors
 that can affect the stock prices (i.e. people's emotion, natural disasters, etc), 
-but I believe that we can predict whether the closing price goes up or down by applying machine learning techniques and algorithm from the historical data set for this project. 
+but I believe that I can predict whether the closing price goes up or down by applying machine learning techniques and algorithm from the historical data set for this project. 
 
 
-```
-In this section, you will want to clearly define the problem that you are trying to solve, including the strategy (outline of tasks) you will use to achieve the desired solution. You should also thoroughly discuss what the intended solution will be for this problem. Questions to ask yourself when writing this section:
-- _Is the problem statement clearly defined? Will the reader understand what you are expecting to solve?_
-- _Have you thoroughly discussed how you will attempt to solve the problem?_
-- _Is an anticipated solution clearly defined? Will the reader understand what results you are looking for?_
-```
-
-### Metrics
+### Metrics(TODO)
 
 To determine how accurate the prediction is, we analyze the difference between 
 the predicted and the actual adjusted close price. Smaller the difference indicates better 
@@ -55,20 +40,55 @@ Also, by visualizing the predicted price and the actual price with a plot or a g
 prediction is clearly.
 
 
-```
-In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
-- _Are the metrics you’ve chosen to measure the performance of your models clearly discussed and defined?_
-- _Have you provided reasonable justification for the metrics chosen based on the problem and solution?_
-```
+_TODO:Why using RMSE?_
+
 
 ## II. Analysis
 
 ### Data Exploration (TODO)
-In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
-- _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
-- _If a dataset is present for this problem, are statistics about the dataset calculated and reported? Have any relevant results from this calculation been discussed?_
-- _If a dataset is **not** present for this problem, has discussion been made about the input space or input data for your problem?_
-- _Are there any abnormalities or characteristics about the input space or dataset that need to be addressed? (categorical variables, missing values, outliers, etc.)_
+
+There are several data sources for the historical stock price data.
+I can use yahoo finance data set (`.csv` format) for this project.
+
+The data includes following properties:
+
+- Date
+- Open
+- High
+- Low
+- Close
+- Adj Close
+- Volume
+
+How different is adjusted close price from close price?
+
+Adjusted close price is the price of the stock at the closing of the trading adjusted with the dividends, and the close price is the price of the stock at the closing of the trading. Both values can be same, or not.
+
+Data set is daily hisorical prices for 10 years (Jul 24, 2007 - Jul 24, 2017),
+which is 2518 data set for each stock (2518 days of trading).
+
+80% of the data set can be used for training.<br />
+20% of the data set can be used for testing.
+
+Download the CSV file for each (GE, S&P 500, Microsoft, Apple, Toyota)
+
+- GE: https://finance.yahoo.com/quote/GE/history?p=GE
+- Microsoft: https://finance.yahoo.com/quote/MSFT/history?p=MSFT
+- Apple: https://finance.yahoo.com/quote/AAPL/history?p=AAPL
+- Toyota: https://finance.yahoo.com/quote/TM/history?p=TM
+- S&P 500: https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC
+
+
+**Example data from csv**
+
+| Date       | Open       | High       | Low	    | Close      | Adj Close | Volume  |
+| ---------- | ---------- | ---------- | ---------- | ---------- | --------- | ------- |
+| 2007-07-24 | 123.779999 | 123.779999 | 122.309998	| 122.489998 | 98.390572 | 418000  |
+| 2007-07-25 | 123.389999 | 123.410004 | 121.500000	| 122.290001 | 98.229897 | 557900  |
+| 2007-07-26 | 122.320000 | 122.349998 | 117.050003	| 119.199997 | 95.747864 | 1258500 |
+
+The data set is straight forward and there is no missing value in each column.
+
 
 ### Exploratory Visualization (TODO)
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
