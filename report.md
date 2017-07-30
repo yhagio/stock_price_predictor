@@ -45,22 +45,12 @@ _TODO:Why using RMSE?_
 
 ## II. Analysis
 
-### Data Exploration (TODO)
+### Data Exploration
 
 There are several data sources for the historical stock price data.
 I can use yahoo finance data set (`.csv` format) for this project.
 
-The data includes following properties:
-
-- Date
-- Open
-- High
-- Low
-- Close
-- Adj Close
-- Volume
-
-How different is adjusted close price from close price?
+**_How different is adjusted close price from close price?_**
 
 Adjusted close price is the price of the stock at the closing of the trading adjusted with the dividends, and the close price is the price of the stock at the closing of the trading. Both values can be same, or not.
 
@@ -79,7 +69,9 @@ Download the CSV file for each (GE, S&P 500, Microsoft, Apple, Toyota)
 - S&P 500: https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC
 
 
-**Example data from csv**
+**_Example data from csv_**
+
+The data includes following properties:
 
 | Date       | Open       | High       | Low	    | Close      | Adj Close | Volume  |
 | ---------- | ---------- | ---------- | ---------- | ---------- | --------- | ------- |
@@ -90,11 +82,12 @@ Download the CSV file for each (GE, S&P 500, Microsoft, Apple, Toyota)
 The data set is straight forward and there is no missing value in each column.
 
 
-### Exploratory Visualization (TODO)
-In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
-- _Have you visualized a relevant characteristic or feature about the dataset or input data?_
-- _Is the visualization thoroughly analyzed and discussed?_
-- _If a plot is provided, are the axes, title, and datum clearly defined?_
+### Exploratory Visualization
+
+**Toyota Motor data**
+
+![alt text](images/tm_data_viz.png "Toyota Motor")
+
 
 ### Algorithms and Techniques (TODO)
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
