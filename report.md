@@ -126,9 +126,10 @@ In this section, you will need to discuss the algorithms and techniques you inte
 
 ### Benchmark (TODO)
 
-As a baseline benchmark model, I used Linear Regression model, and compare the result with
-the solution model (Deep Learning - LSTM model). As the metric, I can use Root Mean Squared Error (RMSE) and it will show that less RMSE score indicates better prediction. Also, I can visualize the predictions using a plot or a graph, it will be easy to see the result.
-
+As a baseline benchmark model, I used Linear Regression model.
+As the metric, I chose to show Mean Squared Error (MSE) and Root Mean Squared Error (RMSE).
+It will show that less RMSE score indicates better prediction.
+Also, I can visualize the predictions using a plot or a graph, it will be easy to see the result.
 
 
 
@@ -147,14 +148,12 @@ there is no need for feature engineering.
 So I take the **Adj Close** column from the dataset.
 
 For Linear Regression,
-I use the raw datasets to put linear regression line.
+I took the Adjusted Closing Price to put them in linear regression line.
 
 
 For LSTM model,
-I normalize the datasets to improve the convergence.
-
-**Why do I normalize the datasets for LSTM model?**
-
+I normalized the Adjusted Closing Prices to improve the convergence.
+I used LSTM from Keras libaray with Tensorflow backend.
 
 
 
@@ -188,6 +187,8 @@ In this section, the process for which metrics, algorithms, and techniques that 
 
 ### Refinement (TODO)
 
+Changed parameter values
+
 
 
 In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
@@ -199,6 +200,11 @@ In this section, you will need to discuss the process of improvement you made up
 ## IV. Results (TODO)
 
 ### Model Evaluation and Validation (TODO)
+
+
+After improvement, the final model predicts with higher accuracy than basic model.
+
+
 In this section, the final model and any supporting qualities should be evaluated in detail. It should be clear how the final model was derived and why this model was chosen. In addition, some type of analysis should be used to validate the robustness of this model and its solution, such as manipulating the input data or environment to see how the model’s solution is affected (this is called sensitivity analysis). Questions to ask yourself when writing this section:
 - _Is the final model reasonable and aligning with solution expectations? Are the final parameters of the model appropriate?_
 - _Has the final model been tested with various inputs to evaluate whether the model generalizes well to unseen data?_
@@ -206,6 +212,11 @@ In this section, the final model and any supporting qualities should be evaluate
 - _Can results found from the model be trusted?_
 
 ### Justification (TODO)
+
+Compared to the simple linear regression model (benchmark model), LSTM model (solution model) predicts better.
+
+
+
 In this section, your model’s final solution and its results should be compared to the benchmark you established earlier in the project using some type of statistical analysis. You should also justify whether these results and the solution are significant enough to have solved the problem posed in the project. Questions to ask yourself when writing this section:
 - _Are the final results found stronger than the benchmark result reported earlier?_
 - _Have you thoroughly analyzed and discussed the final solution?_
@@ -215,12 +226,19 @@ In this section, your model’s final solution and its results should be compare
 ## V. Conclusion (TODO)
 
 ### Free-Form Visualization (TODO)
+
+Add images here!
+
+
 In this section, you will need to provide some form of visualization that emphasizes an important quality about the project. It is much more free-form, but should reasonably support a significant result or characteristic about the problem that you want to discuss. Questions to ask yourself when writing this section:
 - _Have you visualized a relevant or important quality about the problem, dataset, input data, or results?_
 - _Is the visualization thoroughly analyzed and discussed?_
 - _If a plot is provided, are the axes, title, and datum clearly defined?_
 
 ### Reflection (TODO)
+
+
+
 In this section, you will summarize the entire end-to-end problem solution and discuss one or two particular aspects of the project you found interesting or difficult. You are expected to reflect on the project as a whole to show that you have a firm understanding of the entire process employed in your work. Questions to ask yourself when writing this section:
 - _Have you thoroughly summarized the entire process you used for this project?_
 - _Were there any interesting aspects of the project?_
@@ -228,6 +246,9 @@ In this section, you will summarize the entire end-to-end problem solution and d
 - _Does the final model and solution fit your expectations for the problem, and should it be used in a general setting to solve these types of problems?_
 
 ### Improvement (TODO)
+
+
+
 In this section, you will need to provide discussion as to how one aspect of the implementation you designed could be improved. As an example, consider ways your implementation can be made more general, and what would need to be modified. You do not need to make this improvement, but the potential solutions resulting from these changes are considered and compared/contrasted to your current solution. Questions to ask yourself when writing this section:
 - _Are there further improvements that could be made on the algorithms or techniques you used in this project?_
 - _Were there algorithms or techniques you researched that you did not know how to implement, but would consider using if you knew how?_
@@ -244,5 +265,6 @@ In this section, you will need to provide discussion as to how one aspect of the
 - https://www.freelancermap.com/freelancer-tips/11865-trend-prediction-with-lstm-rnns-using-keras-tensorflow-in-3-steps]
 - https://medium.com/@TalPerry/deep-learning-the-stock-market-df853d139e02
 - http://www.naun.org/main/NAUN/mcs/2017/a042002-041.pdf
+- https://stats.stackexchange.com/questions/189652/is-it-a-good-practice-to-always-scale-normalize-data-for-machine-learning
 - Machine Learning for Trading: https://www.udacity.com/course/machine-learning-for-trading--ud501
 - Time Series Forecasting https://www.udacity.com/course/time-series-forecasting--ud980
