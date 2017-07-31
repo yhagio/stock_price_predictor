@@ -26,7 +26,7 @@ that can affect the stock prices (i.e. people's emotion, natural disasters, etc)
 but I believe that I can predict whether the closing price goes up or down by applying machine learning techniques and algorithm from the historical data set for this project. 
 
 
-### Metrics(TODO)
+### Metrics
 
 To determine how accurate the prediction is, we analyze the difference between 
 the predicted and the actual adjusted close price. Smaller the difference indicates better 
@@ -126,7 +126,10 @@ In this section, you will need to discuss the algorithms and techniques you inte
 
 ### Benchmark (TODO)
 
-My benchmark model is Linear Regression.
+As a baseline benchmark model, I used Linear Regression model, and compare the result with
+the solution model (Deep Learning - LSTM model). As the metric, I can use Root Mean Squared Error (RMSE) and it will show that less RMSE score indicates better prediction. Also, I can visualize the predictions using a plot or a graph, it will be easy to see the result.
+
+
 
 
 In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
@@ -143,6 +146,15 @@ there is no need for feature engineering.
 
 So I take the **Adj Close** column from the dataset.
 
+For Linear Regression,
+I use the raw datasets to put linear regression line.
+
+
+For LSTM model,
+I normalize the datasets to improve the convergence.
+
+**Why do I normalize the datasets for LSTM model?**
+
 
 
 
@@ -155,6 +167,16 @@ In this section, all of your preprocessing steps will need to be clearly documen
 ### Implementation (TODO)
 
 
+From the data set of yahoo finance. Predict the closing price of a target day based on the 
+historical data up to the previous day of the target day.
+
+I try to use a kind of Recurrent Neural Network (RNN), called Long Short Term Memory (LSTM) from Keras library for benchmark model. RNN is a deep learning algorithm that has a "memory"
+to remember / store the information about what has been calculated previously.
+
+LSTM networks have memory blocks that are connected through layers, and it can choose what it remembers and can decide to forget, so it can adjust how much of memory it should pass to next layer.
+
+Since I use the time series of data of stock prices and try to predict the price,
+LSTM looks good fits for this project.
 
 
 
@@ -211,14 +233,16 @@ In this section, you will need to provide discussion as to how one aspect of the
 - _Were there algorithms or techniques you researched that you did not know how to implement, but would consider using if you knew how?_
 - _If you used your final solution as the new benchmark, do you think an even better solution exists?_
 
------------
+### References
 
-**Before submitting, ask yourself. . .**
-
-- Does the project report you’ve written follow a well-organized structure similar to that of the project template?
-- Is each section (particularly **Analysis** and **Methodology**) written in a clear, concise and specific fashion? Are there any ambiguous terms or phrases that need clarification?
-- Would the intended audience of your project be able to understand your analysis, methods, and results?
-- Have you properly proof-read your project report to assure there are minimal grammatical and spelling mistakes?
-- Are all the resources used for this project correctly cited and referenced?
-- Is the code that implements your solution easily readable and properly commented?
-- Does the code execute without error and produce results similar to those reported?
+- http://fortune.com/2017/03/30/blackrock-robots-layoffs-artificial-intelligence-ai-hedge-fund/
+- https://seekingalpha.com/article/4083754-superior-portfolio-roi-artificially-intelligent-algorithms
+- http://colah.github.io/posts/2015-08-Understanding-LSTMs/
+- http://machinelearningmastery.com/time-series-prediction-with-deep-learning-in-python-with-keras/
+- http://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/
+- http://www.jakob-aungiers.com/articles/a/LSTM-Neural-Network-for-Time-Series-Prediction
+- https://www.freelancermap.com/freelancer-tips/11865-trend-prediction-with-lstm-rnns-using-keras-tensorflow-in-3-steps]
+- https://medium.com/@TalPerry/deep-learning-the-stock-market-df853d139e02
+- http://www.naun.org/main/NAUN/mcs/2017/a042002-041.pdf
+- Machine Learning for Trading: https://www.udacity.com/course/machine-learning-for-trading--ud501
+- Time Series Forecasting https://www.udacity.com/course/time-series-forecasting--ud980
