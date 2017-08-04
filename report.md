@@ -127,7 +127,7 @@ Since I do not want to set the baseline model to be complicated, slow, or requir
 to implement. Linear Regression is simple, fast, and is not required to transform the dataset. So,
 it satisfies my need for this.
 
-As the solution model, I chose **LSTM** model as the solution benchmark model.
+As the solution model, I chose **LSTM** model as the solution benchmark model as explained in  **Algorithms and Techniques** section (above).
 
 ## III. Methodology
 
@@ -146,51 +146,149 @@ For LSTM model,
 I normalized the Adjusted Closing Prices to improve the convergence.
 I used LSTM from Keras libaray with Tensorflow backend.
 
-
 TODO: Explain helper functions, why normalized for LSTM?
+```py
+# Load only 'Adj Close' column from CSV
+def load_adj_close(filePath):
+    columns = defaultdict(list) # each value in each column is appended to a list
+
+    with open(filePath) as f:
+        reader = csv.DictReader(f)    # read rows into a dictionary format
+        for row in reader:            # read a row as {column1: value1, column2: value2,...}
+            for (k,v) in row.items(): # go over each column name and value 
+                columns[k].append(v)  # append the value into the appropriate list based on column name k
+
+    return columns['Adj Close']
+
+# Loading datasets and turn them into training and testing sets
+def load_data_split_train_test(data, seq_len, normalise_window):
+    sequence_length = seq_len + 1
+    result = []
+    for index in range(len(data) - sequence_length):
+        result.append(data[index: index + sequence_length])
+    
+    if normalise_window:
+        result = normalise_windows(result)
+
+    result = np.array(result)
+
+    row = round(0.9 * result.shape[0])
+    train = result[:int(row), :]
+    np.random.shuffle(train)
+    x_train = train[:, :-1]
+    y_train = train[:, -1]
+    x_test = result[int(row):, :-1]
+    y_test = result[int(row):, -1]
+
+    x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
+    x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))  
+
+    return [x_train, y_train, x_test, y_test]
+
+# Normalize function
+def normalise_windows(window_data):
+    normalised_data = []
+    for window in window_data:
+        normalised_window = [((float(p) / float(window[0])) - 1) for p in window]
+        normalised_data.append(normalised_window)
+    return normalised_data
+```
 
 ### Implementation
 
 **Baseline - Linear Regression model**
 
 TODO: Explain the code
+```py
+# Load data (Toyota Motor) and split it into training and testing
+data = pd.read_csv(csv_file)
+dates = pd.DataFrame(np.arange(2518))
+adj_closes = data['Adj Close']
+X_train, X_test, y_train, y_test = train_test_split(dates, adj_closes, test_size = 0.2, random_state = 0)
+
+# Show the results of the split
+print "Training set has {} samples.".format(X_train.shape[0])
+print "Testing set has {} samples.".format(X_test.shape[0])
+
+regr = linear_model.LinearRegression()
+regr.fit(X_train[:2014], y_train[:2014])
+
+TM_MSE = np.mean((regr.predict(X_test) - y_test) ** 2)
+TM_RMSE = sqrt(TM_MSE)
+```
+
+Toyota (MSE):  42372.5503461<br />
+Toyota (RMSE):  205.845938377<br />
+Apple (MSE):  140.716829046<br />
+Apple (RMSE):  15.1606854234<br />
+GE (MSE):  23.9049412946<br />
+GE (RMSE):  15.1606854234<br />
+Microsoft (MSE):  45.2928752424<br />
+Microsoft (RMSE):  15.1606854234<br />
+S&P 500 (MSE):  42372.5503461<br />
+S&P 500 (RMSE):  15.1606854234<br />
 
 **The solution - LSTM model**
 
 TODO: Explain the code
 
+```py
+# LSTM Model
+batch_size = 1
+nb_epoch = 1
+seq_len = 30
+loss='mean_squared_error'
+optimizer = 'rmsprop'
+activation = 'linear'
+input_dim = 1
+output_dim = 30
+
+# Get Adjusted Close price and split the data
+adj_closes = load_adj_close(csv_file)
+X_train_, y_train_, X_test_, y_test_ = load_data_split_train_test(adj_closes, seq_len, True)
+
+# Build Model
+model = Sequential()
+
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=False))
+
+model.add(Dense(
+    output_dim=1))
+model.add(Activation(activation))
+
+start = time.time()
+model.compile(loss=loss, optimizer=optimizer)
+
+#Train the model
+model.fit(
+    X_train_,
+    y_train_,
+    batch_size=batch_size,
+    nb_epoch=nb_epoch,
+    validation_split=0.05)
+
+testPredict = model.predict(X_test_, batch_size=batch_size)
+score = model.evaluate(X_test_, y_test_, batch_size=batch_size, verbose=0)
+
+TM_MSE = score
+TM_RMSE = math.sqrt(score)
+```
+
 **The accuracy**
 
-**Toyota**<br />
-Linear Regression MSE: <br />
-LSTM MSE: <br />
-Linear Regression RMSE: <br />
-LSTM RMSE: <br />
-
-**Apple**<br />
-Linear Regression MSE: <br />
-LSTM MSE: <br />
-Linear Regression RMSE: <br />
-LSTM RMSE: <br />
-
-**GE**<br />
-Linear Regression MSE: <br />
-LSTM MSE: <br />
-Linear Regression RMSE: <br />
-LSTM RMSE: <br />
-
-**Microsoft**<br />
-Linear Regression MSE: <br />
-LSTM MSE: <br />
-Linear Regression RMSE: <br />
-LSTM RMSE: <br />
-
-**S&P 500**<br />
-Linear Regression MSE: <br />
-LSTM MSE: <br />
-Linear Regression RMSE: <br />
-LSTM RMSE: <br />
-
+Toyota (MSE):  0.000143752868767<br />
+Toyota (RMSE):  0.0119896984435<br />
+Apple (MSE):  0.000206062711005<br />
+Apple (RMSE):  0.0143548845695<br />
+GE (MSE):  0.000102261837848<br />
+GE (RMSE):  0.010112459535<br />
+Microsoft (MSE):  0.000104691520582<br />
+Microsoft (RMSE):  0.0102318874398<br />
+S&P 500 (MSE):  6.13824635252e-05<br />
+S&P 500 (RMSE):  0.00783469613484<br />
 
 ### Refinement (TODO)
 
@@ -217,7 +315,7 @@ TODO: comparison, significant enough to solve the original issue?
 
 ### Free-Form Visualization (TODO)
 
-Add images here!
+TODO: Add images here!
 
 
 ### Reflection (TODO)
