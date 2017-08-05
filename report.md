@@ -23,7 +23,8 @@ In this project, simply I experimented to use Deep Learning to predict stock pri
 There is no easy way to predict stock prices accurately 
 and no method is perfect since there are many factors
 that can affect the stock prices (i.e. people's emotion, natural disasters, etc), 
-but I believe that I can predict whether the closing price goes up or down by applying machine learning techniques and algorithm from the historical data set for this project. 
+but I believe that I can predict whether the closing price goes up or down by
+applying machine learning techniques and algorithm from the historical data set for this project. 
 
 
 ### Metrics
@@ -36,16 +37,17 @@ I chose both Mean Squared Error (MSE) and Root Mean Squared Error (RMSE)
 as a metric to determine the accuracy of the prediction. 
 It is a commonly used general purpose quality estimator.
 
-Also, by visualizing the predicted price and the actual price with a plot or a graph, it can tell how close the 
-prediction is clearly.
+Also, by visualizing the predicted price and the actual price with a plot or a graph,
+it can tell how close the prediction is clearly.
 
 
 **Why I use MSE/RMSE for the metric?**
 
 There are many metrics for accuracy like R2, MAE, etc.
 
-I chose to use MSE/RMSE because they explicitly show the deviation of the prediction for continuous variables
-from the actual dataset. So, they fit in this project to measure the accuracy.
+I chose to use MSE/RMSE because they explicitly show the deviation of the prediction
+for continuous variables from the actual dataset.
+So, they fit in this project to measure the accuracy.
 
 ![alt text](images/rmse.gif "RMSE")
 
@@ -62,24 +64,19 @@ can be critical, so it is appropriate metric to penalize the large errors.
 There are several data sources for the historical stock price data.
 I can use yahoo finance data set (`.csv` format) for this project.
 
-**_How different is adjusted close price from close price?_**
-
-Adjusted close price is the price of the stock at the closing of the trading adjusted with the dividends, and the close price is the price of the stock at the closing of the trading. Both values can be same, or not.
-
 Data set is daily hisorical prices for 10 years (Jul 24, 2007 - Jul 24, 2017),
-which is 2518 dataset for each stock (2518 days of trading).
+which is **2518** dataset for each stock (2518 days of trading).
 
 90% of the data set were used for training.<br />
 10% of the data set were used for testing.
 
-Download the CSV file for each (GE, S&P 500, Microsoft, Apple, Toyota)
+I downloaded the CSV file for each (GE, S&P 500, Microsoft, Apple, Toyota) from Yahoo Finance.
 
 - GE: https://finance.yahoo.com/quote/GE/history?p=GE
 - Microsoft: https://finance.yahoo.com/quote/MSFT/history?p=MSFT
 - Apple: https://finance.yahoo.com/quote/AAPL/history?p=AAPL
 - Toyota: https://finance.yahoo.com/quote/TM/history?p=TM
 - S&P 500: https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC
-
 
 **_Example data from csv_**
 
@@ -91,29 +88,52 @@ The data includes following properties:
 | 2007-07-25 | 123.389999 | 123.410004 | 121.500000	| 122.290001 | 98.229897 | 557900  |
 | 2007-07-26 | 122.320000 | 122.349998 | 117.050003	| 119.199997 | 95.747864 | 1258500 |
 
-The data set is straight forward and there is no missing value in each column.
+All the dataset has following columns: <br />
+**Date**: Year-Month-Day <br />
+**Open**: The Price of the stock at the opening of the trading day ($US) <br />
+**High**: The highest price of the stock during the trading day ($US) <br />
+**Low**: The lowest price of the stock during the trading day ($US) <br />
+**Close**: The Price of the stock at the closing of the trading day ($US) <br />
+**Adj Close**: The price of the stock at the closing of the trading day adjusted with the dividends ($US) <br />
+**Volume**: The amount of traded stocks on the day ($US)
+
+The dataset is straight forward and there is no missing value in each column.
+
 
 
 ### Exploratory Visualization
 
 **Toyota Motor data**
 
-Plot of the dataset from Toyota Motor for Adjusted Close Price for 10 years trading period.
+The following image is the plot of the dataset from Toyota Motor for
+Adjusted Close Price for 10 years trading period.
+X-axis is the trading days and Y-axis is the adjusted price.
+I used the simple line chart,
+so that it is easily understandable how the stock price is moving each day.
 
 ![alt text](images/tm_data_viz.png "Toyota Motor")
+
+
 
 ### Algorithms and Techniques
 
 From the data set of yahoo finance. Predict the closing price of a target day based on the 
 historical data up to the previous day of the target day.
 
-I try to use a kind of Recurrent Neural Network (RNN), called Long Short Term Memory (LSTM) from Keras library for the solution model. RNN is a deep learning algorithm that has a "memory"
+I decided to use a kind of Recurrent Neural Network (RNN), called Long Short Term Memory (LSTM)
+from Keras library for the solution model. RNN is a deep learning algorithm that has a "memory"
 to remember / store the information about what has been calculated previously.
 
-LSTM networks have memory blocks that are connected through layers, and it can choose what it remembers and can decide to forget, so it can adjust how much of memory it should pass to next layer.
+LSTM networks have memory blocks that are connected through layers,
+and it can choose what it remembers and can decide to forget,
+so it can adjust how much of memory it should pass to next layer.
 
 Since I use the time series of data of stock prices and try to predict the price,
 LSTM looks good fits for this project.
+
+
+
+
 
 ### Benchmark
 
@@ -122,11 +142,21 @@ As a baseline benchmark model, I used **Linear Regression** model.
 **_Why I chose Linear Regression as a baseline benchmark model?_**
 
 Linear Regression is simple and fairly rigid approximeter to be used as a baseline algorithm.
-Since I do not want to set the baseline model to be complicated, slow, or requiring a sort of data transformation
-to implement. Linear Regression is simple, fast, and is not required to transform the dataset. So,
+Since I do not want to set the baseline model to be complicated, slow, or 
+requiring a sort of data transformation to implement.
+Linear Regression is simple, fast, and is not required to transform the dataset. So,
 it satisfies my need for this.
 
-As the solution model, I chose **LSTM** model as the solution benchmark model as explained in  **Algorithms and Techniques** section (above).
+As the solution model, I chose **LSTM** model as the solution benchmark model
+as explained in  **Algorithms and Techniques** section (above).
+
+I can compare the actual MSE and RMSE score how effectively LSTM model predicts
+compared to simple Linear Regression model.
+Also, by visualizing the actual price and the prediction, it can be compared visuallly as well.
+
+
+
+
 
 ## III. Methodology
 
@@ -176,6 +206,10 @@ def load_data_split_train_test(data, seq_len, normalise_window):
 
     result = np.array(result)
 
+    # Select 10% of the data for testing and 90% for training.
+    # Select the last value of each example to be the target.
+    # The other values are the sequence of inputs.
+    # Shuffle the data in order to train in random order.
     row = round(0.9 * result.shape[0])
     train = result[:int(row), :]
     np.random.shuffle(train)
@@ -184,6 +218,7 @@ def load_data_split_train_test(data, seq_len, normalise_window):
     x_test = result[int(row):, :-1]
     y_test = result[int(row):, -1]
 
+    # Reshape the inputs from 1 dimenstion to 3 dimension
     x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
     x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))  
 
@@ -199,11 +234,21 @@ def normalise_windows(window_data):
     return normalised_data
 ```
 
+
+In this section, all of your preprocessing steps will need to be clearly documented, if any were necessary. From the previous section, any of the abnormalities or characteristics that you identified about the dataset will be addressed and corrected here. Questions to ask yourself when writing this section:
+- _If the algorithms chosen require preprocessing steps like feature selection or feature transformations, have they been properly documented?_
+- _Based on the **Data Exploration** section, if there were abnormalities or characteristics that needed to be addressed, have they been properly corrected?_
+- _If no preprocessing is needed, has it been made clear why?_
+
+
+
+
 ### Implementation
 
 **Baseline - Linear Regression model**
 
-Linear Regression implementation is simple. Split the datasets into training (90%) and testing (10%).
+Linear Regression implementation is simple.
+Split the datasets into training (90%) and testing (10%).
 And then, build the model and return the results (MSE and RMSE).
 ```py
 # Load data (Toyota Motor) and split it into training and testing
@@ -224,7 +269,7 @@ regr.fit(X_train[:int(len(data)*0.9)], y_train[:int(len(data)*0.9)])
 TM_MSE = np.mean((regr.predict(X_test) - y_test) ** 2)
 TM_RMSE = sqrt(TM_MSE)
 ```
-### Linear Regression plot
+#### Linear Regression plot
 
 ![alt text](images/TM_Linear_Regression.png "Toyota Motor")
 
@@ -236,18 +281,18 @@ TM_RMSE = sqrt(TM_MSE)
 
 ![alt text](images/GSPC_Linear_Regression.png "S&P 500")
 
-### Linear Regression results (MSE/RMSE)
+#### Linear Regression results (MSE/RMSE)
 |Company/Index    |MSE/RMSE         |
 |-----------------|-----------------|
 |Toyota (MSE)     | 224.08264758    |
 |Toyota (RMSE)    | 14.9693903543   |
-|Apple (MSE)      |  139.563948246  |
-|Apple (RMSE)     |  14.9693903543  |
-|GE (MSE)         |  21.4913114234  |
-|GE (RMSE)        |  14.9693903543  |
+|Apple (MSE)      | 139.563948246   |
+|Apple (RMSE)     | 14.9693903543   |
+|GE (MSE)         | 21.4913114234   |
+|GE (RMSE)        | 14.9693903543   |
 |Microsoft (MSE)  | 37.4523711689   |
-|Microsoft (RMSE) |  14.9693903543  |
-|S&P 500 (MSE)    |  37539.2002769  |
+|Microsoft (RMSE) | 14.9693903543   |
+|S&P 500 (MSE)    | 37539.2002769   |
 |S&P 500 (RMSE)   | 14.9693903543   |
 
 **The solution - LSTM model**
@@ -307,7 +352,7 @@ TM_MSE = score
 TM_RMSE = math.sqrt(score)
 ```
 
-### Baisc LSTM plot
+#### Baisc LSTM plot
 
 ![alt text](images/TM_LSTM_1.png "Toyota Motor")
 
@@ -319,20 +364,23 @@ TM_RMSE = math.sqrt(score)
 
 ![alt text](images/GSPC_LSTM_1.png "S&P 500")
 
-### Basic LSTM results (MSE/RMSE)
+#### Comparison of resultst of Basic LSTM results and Linear Regression
 
-|Company/Index    |MSE/RMSE         |
-|-----------------|-----------------|
-|Toyota (MSE)     |0.000143752868767|
-|Toyota (RMSE)    |0.0119896984435  |
-|Apple (MSE)      |0.000206062711005|
-|Apple (RMSE)     |0.0143548845695  |
-|GE (MSE)         |0.000102261837848|
-|GE (RMSE)        |0.010112459535   |
-|Microsoft (MSE)  |0.000104691520582|
-|Microsoft (RMSE) |0.0102318874398  |
-|S&P 500 (MSE)    |6.13824635252e-05|
-|S&P 500 (RMSE)   |0.00783469613484 |
+| LSTM                              | Linear Regression                 |
+|-----------------------------------|-----------------------------------|
+|Company/Index    |MSE/RMSE         |Company/Index    |MSE/RMSE         |
+|-----------------|-----------------|-----------------|-----------------|
+|Toyota (MSE)     |0.000143752868767|Toyota (MSE)     | 224.08264758    |
+|Toyota (RMSE)    |0.0119896984435  |Toyota (RMSE)    | 14.9693903543   |
+|Apple (MSE)      |0.000206062711005|Apple (MSE)      | 139.563948246   |
+|Apple (RMSE)     |0.0143548845695  |Apple (RMSE)     | 14.9693903543   |
+|GE (MSE)         |0.000102261837848|GE (MSE)         | 21.4913114234   |
+|GE (RMSE)        |0.010112459535   |GE (RMSE)        | 14.9693903543   |
+|Microsoft (MSE)  |0.000104691520582|Microsoft (MSE)  | 37.4523711689   |
+|Microsoft (RMSE) |0.0102318874398  |Microsoft (RMSE) | 14.9693903543   |
+|S&P 500 (MSE)    |6.13824635252e-05|S&P 500 (MSE)    | 37539.2002769   |
+|S&P 500 (RMSE)   |0.00783469613484 |S&P 500 (RMSE)   | 14.9693903543   |
+
 
 
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
@@ -340,10 +388,16 @@ In this section, the process for which metrics, algorithms, and techniques that 
 - _Were there any complications with the original metrics or techniques that required changing prior to acquiring a solution?_
 - _Was there any part of the coding process (e.g., writing complicated functions) that should be documented?_
 
+
+
 ### Refinement
 
 I experimented by playing with parameters and adding and dropping layers to see 
-which one produces better results (Lower MSE / RMSE score). I experimented with just Toyota datasets since it is time consuming and does not really make sense to apply the same algorithm and the technique to all the datasets (Apple, GE, Microsoft, S&P 500) to see the effectiveness. One dataset is enough.
+which one produces better results (Lower MSE / RMSE score).
+I experimented with just Toyota datasets since it is time consuming and
+does not really make sense to apply the same algorithm and
+the technique to all the datasets (Apple, GE, Microsoft, S&P 500) to see
+the effectiveness. One dataset is enough.
 
 **Experiment-1**
 
@@ -385,13 +439,18 @@ In this section, you will need to discuss the process of improvement you made up
 - _Is the process of improvement clearly documented, such as what techniques were used?_
 - _Are intermediate and final solutions clearly reported as the process is improved?_
 
+
+
+
 ## IV. Results
 
 ### Model Evaluation and Validation
 
-After the refinement (experimenting with parameters), the final model predicts with higher accuracy than the first basic LSTM model, as well as the regression model.
+After the refinement (experimenting with parameters),
+the final model predicts with higher accuracy than the first basic LSTM model,
+as well as the regression model.
 
-### Final LSTM model plot
+#### Final LSTM model plot
 
 ![alt text](images/TM_LSTM_final.png "Toyota Motor")
 
@@ -403,7 +462,7 @@ After the refinement (experimenting with parameters), the final model predicts w
 
 ![alt text](images/GSPC_LSTM_final.png "S&P 500")
 
-### Final LSTM model results
+#### Final LSTM model results
 
 |Company/Index    |MSE/RMSE         |
 |-----------------|-----------------|
@@ -419,11 +478,34 @@ After the refinement (experimenting with parameters), the final model predicts w
 |S&P 500 (RMSE)   |0.00723791624904 |
 
 
+
+#### Comparison between initial and final LSTM models results
+
+| Initial LSTM                      | Final LSTM                        |
+|-----------------------------------|-----------------------------------|
+|Company/Index    |MSE/RMSE         |Company/Index    |MSE/RMSE         |
+|-----------------|-----------------|-----------------|-----------------|
+|Toyota (MSE)     |0.000143752868767|Toyota (MSE)     |0.000131006485125|
+|Toyota (RMSE)    |0.0119896984435  |Toyota (RMSE)    |0.0114458064428  |
+|Apple (MSE)      |0.000206062711005|Apple (MSE)      |0.000140182430504|
+|Apple (RMSE)     |0.0143548845695  |Apple (RMSE)     |0.0118398661523  |
+|GE (MSE)         |0.000102261837848|GE (MSE)         |7.87504528992e-05|
+|GE (RMSE)        |0.010112459535   |GE (RMSE)        |0.00887414519259 |
+|Microsoft (MSE)  |0.000104691520582|Microsoft (MSE)  |9.82947370459e-05|
+|Microsoft (RMSE) |0.0102318874398  |Microsoft (RMSE) |0.00991437022941 |
+|S&P 500 (MSE)    |6.13824635252e-05|S&P 500 (MSE)    |5.23874316281e-05|
+|S&P 500 (RMSE)   |0.00783469613484 |S&P 500 (RMSE)   |0.00723791624904 |
+
+
+
+
 In this section, the final model and any supporting qualities should be evaluated in detail. It should be clear how the final model was derived and why this model was chosen. In addition, some type of analysis should be used to validate the robustness of this model and its solution, such as manipulating the input data or environment to see how the model’s solution is affected (this is called sensitivity analysis). Questions to ask yourself when writing this section:
 - _Is the final model reasonable and aligning with solution expectations? Are the final parameters of the model appropriate?_
 - _Has the final model been tested with various inputs to evaluate whether the model generalizes well to unseen data?_
 - _Is the model robust enough for the problem? Do small perturbations (changes) in training data or the input space greatly affect the results?_
 - _Can results found from the model be trusted?_
+
+
 
 
 ### Justification
@@ -436,6 +518,9 @@ In this section, your model’s final solution and its results should be compare
 - _Are the final results found stronger than the benchmark result reported earlier?_
 - _Have you thoroughly analyzed and discussed the final solution?_
 - _Is the final solution significant enough to have solved the problem?_
+
+
+
 
 ## V. Conclusion
 
@@ -451,7 +536,9 @@ In this section, you will need to provide some form of visualization that emphas
 
 TODO-8
 
-I realized that how powerful Deep Learning is. By using the library (Keras in this project, but there are more like Tensorflow) to implement it with a few lines of code.
+I realized that how powerful Deep Learning is.
+By using the library (Keras in this project,
+but there are more like Tensorflow) to implement it with a few lines of code.
 
 The final model improves the result but the time it took is much greater than the basic model.
 
@@ -466,7 +553,9 @@ In this section, you will summarize the entire end-to-end problem solution and d
 ### Improvement
 
 TODO-9
-I strongly belive there are better solutions with less time consumption than I did. This is implemented with Python 2.7, but I believe that if I use a compiled language like C++ or Go, it will be much faster than Python.
+I strongly belive there are better solutions with less time consumption than I did.
+This is implemented with Python 2.7, but I believe that if I use a compiled language like C++ or Go,
+it will be much faster than Python.
 
 In this section, you will need to provide discussion as to how one aspect of the implementation you designed could be improved. As an example, consider ways your implementation can be made more general, and what would need to be modified. You do not need to make this improvement, but the potential solutions resulting from these changes are considered and compared/contrasted to your current solution. Questions to ask yourself when writing this section:
 - _Are there further improvements that could be made on the algorithms or techniques you used in this project?_
