@@ -1,0 +1,24 @@
+{
+  "name": "capstone",
+  "version": "1.0.0",
+  "description": "This is only used to conver markdown to pdf",
+  "scripts": {
+    "preproposal": "rm proposal.pdf",
+    "proposal": "node proposal.js",
+    "prereport": "rm report.pdf",
+    "report": "node report.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yhagio/stock_price_predictor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yhagio/stock_price_predictor/issues"
+  },
+  "homepage": "https://github.com/yhagio/stock_price_predictor#readme",
+  "dependencies": {
+    "markdown-pdf": "^8.0.0"
+  }
+}

@@ -46,8 +46,8 @@ Adjusted close price is the price of the stock at the closing of the trading adj
 Data set is daily hisorical prices for 10 years (Jul 24, 2007 - Jul 24, 2017),
 which is 2518 data set for each stock (2518 days of trading).
 
-80% of the data set can be used for training.<br />
-20% of the data set can be used for testing.
+90% of the data set can be used for training.<br />
+10% of the data set can be used for testing.
 
 Download the CSV file for each (GE, S&P 500, Microsoft, Apple, Toyota)
 
@@ -113,7 +113,7 @@ I'll probably use following tech stack:
 
 - Load datasets downloaded as CSV from Yahoo Finance
 - Plot the datasets (Date / Adjusted Closing Price) to see the actual prices
-- Split the datasets into training (80%) and testing (20%)
+- Split the datasets into training (90%) and testing (10%)
 
 2: Train / test the model, and visualize log the result
 

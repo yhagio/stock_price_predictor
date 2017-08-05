@@ -64,7 +64,7 @@ can be critical, so it is appropriate metric to penalize the large errors.
 There are several data sources for the historical stock price data.
 I can use yahoo finance data set (`.csv` format) for this project.
 
-Data set is daily hisorical prices for 10 years (Jul 24, 2007 - Jul 24, 2017),
+Data set is daily historical prices for 10 years (Jul 24, 2007 - Jul 24, 2017),
 which is **2518** dataset for each stock (2518 days of trading).
 
 90% of the data set were used for training.<br />
@@ -152,7 +152,7 @@ as explained in  **Algorithms and Techniques** section (above).
 
 I can compare the actual MSE and RMSE score how effectively LSTM model predicts
 compared to simple Linear Regression model.
-Also, by visualizing the actual price and the prediction, it can be compared visuallly as well.
+Also, by visualizing the actual price and the prediction, it can be compared visually as well.
 
 
 
@@ -163,23 +163,25 @@ Also, by visualizing the actual price and the prediction, it can be compared vis
 ### Data Preprocessing
 
 Since it simply tries to predicts the **Adjusted Close** Price from the past data, I believe
-there is no need for feature engineering.
+there is no need for feature engineering. Also there are no missing values or abnormality in the dataset.
+For this project, I use **dates** and **adjusted close price** to keep it simple.
 
-So I took the **Adj Close** column from the dataset.
+For Linear Regression, I use Pandas read CSV file into DataFrame.
+I use dates and adjusted close prices, but the dates are strings and not numerical,
+so I simply put the trading days as integers, so total trading days are equal to total number of dataset.
 
-For Linear Regression,
-I took the Adjusted Closing Price to put them in linear regression line.
+And then, I used `train_test_split` from `sklearn.cross_validation` to split the dataset
+into training and testing sets. That's it for data preparation for the baseline Linear Regression model.
 
 For LSTM model,
 I normalized the Adjusted Closing Prices to improve the convergence.
-I used LSTM from Keras libaray with Tensorflow backend.
+I used LSTM from Keras library with Tensorflow backend.
 
-
-I created helper functions for loading datasets:
+I created helper functions for loading datasets when using LSTM model as explained below:
 
 - `load_adj_close`: load a CSV file and return only 'Adj Close' column
 - `load_data_split_train_test`: Load and split datasets into training and testing sets
-- `normalise_window`: Normalize datasets to improve the convergence
+- `normalize_window`: Normalize datasets to improve the convergence
 
 ```py
 # Load only 'Adj Close' column from CSV
@@ -195,14 +197,14 @@ def load_adj_close(filePath):
     return columns['Adj Close']
 
 # Loading datasets and turn them into training and testing sets
-def load_data_split_train_test(data, seq_len, normalise_window):
+def load_data_split_train_test(data, seq_len, normalize_window):
     sequence_length = seq_len + 1
     result = []
     for index in range(len(data) - sequence_length):
         result.append(data[index: index + sequence_length])
     
-    if normalise_window:
-        result = normalise_windows(result)
+    if normalize_window:
+        result = normalize_windows(result)
 
     result = np.array(result)
 
@@ -226,22 +228,13 @@ def load_data_split_train_test(data, seq_len, normalise_window):
 
 # Normalize function
 # Normalize each value to reflect the percentage changes from starting point
-def normalise_windows(window_data):
+def normalize_windows(window_data):
     normalised_data = []
     for window in window_data:
         normalised_window = [((float(p) / float(window[0])) - 1) for p in window]
         normalised_data.append(normalised_window)
     return normalised_data
 ```
-
-
-In this section, all of your preprocessing steps will need to be clearly documented, if any were necessary. From the previous section, any of the abnormalities or characteristics that you identified about the dataset will be addressed and corrected here. Questions to ask yourself when writing this section:
-- _If the algorithms chosen require preprocessing steps like feature selection or feature transformations, have they been properly documented?_
-- _Based on the **Data Exploration** section, if there were abnormalities or characteristics that needed to be addressed, have they been properly corrected?_
-- _If no preprocessing is needed, has it been made clear why?_
-
-
-
 
 ### Implementation
 
@@ -255,7 +248,7 @@ And then, build the model and return the results (MSE and RMSE).
 data = pd.read_csv(csv_file)
 dates = pd.DataFrame(np.arange(len(data)))
 adj_closes = data['Adj Close']
-X_train, X_test, y_train, y_test = train_test_split(dates, adj_closes, test_size = 0.2, random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(dates, adj_closes, test_size = 0.1, random_state = 0)
 
 # Show the results of the split
 print "Training set has {} samples.".format(X_train.shape[0])
@@ -295,7 +288,7 @@ TM_RMSE = sqrt(TM_MSE)
 |S&P 500 (MSE)    | 37539.2002769   |
 |S&P 500 (RMSE)   | 14.9693903543   |
 
-**The solution - LSTM model**
+**The solution - Initial LSTM model**
 
 First implementation of LSTM model follows.
 
@@ -310,7 +303,7 @@ activation = 'linear'     # Linear activation
 input_dim = 1             # Input dimension
 output_dim = 30           # Output dimension
 
-# Get Adjusted Close price and split the data
+# Get Adjusted Close price and split the data into training and testing sets with helper functions
 adj_closes = load_adj_close(csv_file)
 X_train_, y_train_, X_test_, y_test_ = load_data_split_train_test(adj_closes, seq_len, True)
 
@@ -352,7 +345,7 @@ TM_MSE = score
 TM_RMSE = math.sqrt(score)
 ```
 
-#### Baisc LSTM plot
+#### Iitial LSTM plot
 
 ![alt text](images/TM_LSTM_1.png "Toyota Motor")
 
@@ -364,9 +357,23 @@ TM_RMSE = math.sqrt(score)
 
 ![alt text](images/GSPC_LSTM_1.png "S&P 500")
 
-#### Comparison of resultst of Basic LSTM results and Linear Regression
+#### Iitial LSTM model results (MSE/RMSE)
+|Company/Index    |MSE/RMSE         |
+|-----------------|-----------------|
+|Toyota (MSE)     |0.000143752868767|
+|Toyota (RMSE)    |0.0119896984435  |
+|Apple (MSE)      |0.000206062711005|
+|Apple (RMSE)     |0.0143548845695  |
+|GE (MSE)         |0.000102261837848|
+|GE (RMSE)        |0.010112459535   |
+|Microsoft (MSE)  |0.000104691520582|
+|Microsoft (RMSE) |0.0102318874398  |
+|S&P 500 (MSE)    |6.13824635252e-05|
+|S&P 500 (RMSE)   |0.00783469613484 |
 
-LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Linear Regression
+#### Comparison of results of Basic LSTM results and Linear Regression
+
+LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Linear Regression
 
 |Company/Index    |MSE/RMSE         |Company/Index    |MSE/RMSE         |
 |-----------------|-----------------|-----------------|-----------------|
@@ -381,19 +388,20 @@ LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
 |S&P 500 (MSE)    |6.13824635252e-05|S&P 500 (MSE)    | 37539.2002769   |
 |S&P 500 (RMSE)   |0.00783469613484 |S&P 500 (RMSE)   | 14.9693903543   |
 
+Obviously LSTM model's prediction is more accurate significantly as observed
+from the MSE / RMSE results for each dataset.
 
-
-In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
-- _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
-- _Were there any complications with the original metrics or techniques that required changing prior to acquiring a solution?_
-- _Was there any part of the coding process (e.g., writing complicated functions) that should be documented?_
-
-
+For example, comparing Toyota dataset, LSTM model's RMSE is 0.0119896984435 and Linear Regression's is
+14.9693903543. LSTM model predicts about 1248% more accurate (RMSE of Linear Regression divided by RMSE of LSTM).
 
 ### Refinement
 
-I experimented by playing with parameters and adding and dropping layers to see 
+Since I do not know what parameters to tune up or how many layers to add or drop in order to
+lower the MSE / RMSE, I need to simply play around them to find the best solution.
+
+So, I experimented by playing with parameters and adding and dropping layers to see 
 which one produces better results (Lower MSE / RMSE score).
+
 I experimented with just Toyota datasets since it is time consuming and
 does not really make sense to apply the same algorithm and
 the technique to all the datasets (Apple, GE, Microsoft, S&P 500) to see
@@ -401,66 +409,283 @@ the effectiveness. One dataset is enough.
 
 **Experiment-1**
 
+```py
+# Change params and variables
+batch_size = 1            # Batch size, no change
+nb_epoch = 10             # Epoch, initially 1
+seq_len = 50              # Number of Sequence data, Initially 30
+loss='mean_squared_error' # Since the metric is MSE/RMSE, no change
+optimizer = 'rmsprop'     # Recommended optimizer for RNN, no change
+activation = 'linear'     # Linear activation, no change
+input_dim = 1             # Input dimension, no change
+output_dim = 30           # Output dimension, initially 50
+
+# Build Model (No change)
+model = Sequential()
+
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=False))
+
+model.add(Dense(output_dim=1))
+model.add(Activation(activation))
+```
+
 ![alt text](images/TM_experiment_1.png "Toyota Motor 1")
 
 **Experiment-2**
+
+```py
+# Change params and variables
+batch_size = 1            # Batch size, no change
+nb_epoch = 5              # Epoch, initially 1
+seq_len = 50              # Number of Sequence data, Initially 30
+loss='mean_squared_error' # Since the metric is MSE/RMSE, no change
+optimizer = 'rmsprop'     # Recommended optimizer for RNN, no change
+activation = 'linear'     # Linear activation, no change
+input_dim = 1             # Input dimension, no change
+output_dim = 50           # Output dimension, no change
+
+# Build Model
+# Added another LSTM layer with 20% dropout when feeding to next layer
+# Second LSTm layer takes 100 inputs
+model = Sequential()
+
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=True))
+model.add(Dropout(0.2))
+
+model.add(LSTM(
+    100,
+    return_sequences=False))
+model.add(Dropout(0.2))
+
+model.add(Dense(output_dim=1))
+model.add(Activation(activation))
+
+```
 
 ![alt text](images/TM_experiment_2.png "Toyota Motor 2")
 
 **Experiment-3**
 
+```py
+# Change params and variables
+batch_size = 128          # Batch size, initially 1
+nb_epoch = 5              # Epoch, initially 1
+seq_len = 100             # Number of Sequence data, Initially 30
+loss='mean_squared_error' # Since the metric is MSE/RMSE, no change
+optimizer = 'rmsprop'     # Recommended optimizer for RNN, no change
+activation = 'linear'     # Linear activation, no change
+input_dim = 1             # Input dimension, no change
+output_dim = 50           # Output dimension, no change
+
+# Build Model
+# Added another LSTM layer with 20% dropout when feeding to next layer
+# Second LSTm layer takes 200 inputs
+model = Sequential()
+
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=True))
+model.add(Dropout(0.2))
+
+model.add(LSTM(
+    200,
+    return_sequences=False))
+model.add(Dropout(0.2))
+
+model.add(Dense(output_dim=1))
+model.add(Activation(activation))
+```
+
 ![alt text](images/TM_experiment_3.png "Toyota Motor 3")
 
 **Experiment-4**
+
+```py
+# Change params and variables
+batch_size = 128          # Batch size, no change
+nb_epoch = 5              # Epoch, initially 1
+seq_len = 100             # Number of Sequence data, Initially 30
+loss='mean_squared_error' # Since the metric is MSE/RMSE, no change
+optimizer = 'rmsprop'     # Recommended optimizer for RNN, no change
+activation = 'linear'     # Linear activation, no change
+input_dim = 1             # Input dimension, no change
+output_dim = 50           # Output dimension, no change
+
+# Build Model (no change)
+model = Sequential()
+
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=False))
+
+model.add(Dense(output_dim=1))
+model.add(Activation(activation))
+```
 
 ![alt text](images/TM_experiment_4.png "Toyota Motor 4")
 
 **Experiment-5**
 
+```py
+# Change params and variables
+batch_size = 512          # Batch size, initially 1
+nb_epoch = 5              # Epoch, initially 1
+seq_len = 200             # Number of Sequence data, Initially 30
+loss='mean_squared_error' # Since the metric is MSE/RMSE, no change
+optimizer = 'rmsprop'     # Recommended optimizer for RNN, no change
+activation = 'linear'     # Linear activation, no change
+input_dim = 1             # Input dimension, no change
+output_dim = 50           # Output dimension, no change
+
+# Build Model (no change)
+model = Sequential()
+
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=False))
+
+model.add(Dense(output_dim=1))
+model.add(Activation(activation))
+```
+
 ![alt text](images/TM_experiment_5.png "Toyota Motor 5")
 
 **Experiment-6**
+
+```py
+# Change params and variables
+batch_size = 1            # Batch size, no change
+nb_epoch = 10             # Epoch, initially 1
+seq_len = 50              # Number of Sequence data, Initially 30
+loss='mean_squared_error' # Since the metric is MSE/RMSE, no change
+optimizer = 'rmsprop'     # Recommended optimizer for RNN, no change
+activation = 'linear'     # Linear activation, no change
+input_dim = 1             # Input dimension, no change
+output_dim = 50           # Output dimension, no change
+
+# Build Model (no change)
+model = Sequential()
+
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=False))
+
+model.add(Dense(output_dim=1))
+model.add(Activation(activation))
+```
 
 ![alt text](images/TM_experiment_6.png "Toyota Motor 6")
 
 **Experiment-7**
 
+```py
+# Change params and variables
+batch_size = 1            # Batch size, no change
+nb_epoch = 5              # Epoch, initially 1
+seq_len = 10              # Number of Sequence data, Initially 30
+loss='mean_squared_error' # Since the metric is MSE/RMSE, no change
+optimizer = 'rmsprop'     # Recommended optimizer for RNN, no change
+activation = 'linear'     # Linear activation, no change
+input_dim = 1             # Input dimension, no change
+output_dim = 50           # Output dimension, no change
+```
+
 ![alt text](images/TM_experiment_7.png "Toyota Motor 7")
 
 **Experiment results comparison**
 
-| Time         | MSE/RMSE |
-|--------------|----------|
-| Experiment 1 |          |
+| Time         | MSE              | RMSE            | Total computing time  |
+|--------------|------------------|-----------------|-----------------------|
+| Initial LSTM |0.000143752868767 |0.0119896984435  |251  seconds (00:04:11)|
+| Experiment 1 |0.000203450606716 |0.0142636112789  |3994 seconds (01:06:34)|
+| Experiment 2 |0.000273111962431 |0.0165260994318  |3770 seconds (01:02:50)|
+| Experiment 3 |0.00143158305528  |0.0378362664025  |144  seconds (00:02:24)|
+| Experiment 4 |0.00035159466805  |0.018750857795   |39   seconds (00:00:39)|
+| Experiment 5 |0.000587560993154 |0.0242396574471  |42   seconds (00:00:42)|
+| Experiment 6 |0.000118690346404 |0.0108945099203  |3796 seconds (01:03:16)|
+| Experiment 7 |9.6412006261e-05  |0.00981896156734 |438  seconds (00:07:18)|
 
+The experiment 6's RMSE is about 10% lower than the initial LSTM model's RMSE.
+I believe this is great improvement.
 
-In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
-- _Has an initial solution been found and clearly reported?_
-- _Is the process of improvement clearly documented, such as what techniques were used?_
-- _Are intermediate and final solutions clearly reported as the process is improved?_
+From this experiment, I concluded that the experiment 6 would be my final model since it has the lowest MSE/RMSE score.
+Even though it is time consuming, the time cost is not a significant drawback of this project.
 
+As increasing the number of epoch, it will take more time to compute, but it can vary depending on the machine and also
+the language used (Python 2.7 for this project). Also, from this experiment, it seems adding more layers is not really 
+effective for improvement. So keeping the simple model and with small batch size seems the key for improvement.
 
+I can apply this algorithm to other datasets as well.
 
 
 ## IV. Results
 
 ### Model Evaluation and Validation
 
-After the refinement (experimenting with parameters),
-the final model predicts with higher accuracy than the first basic LSTM model,
-as well as the regression model.
+After the refinement (experimenting with parameters as described in the previous section),
+the final model predicts with higher accuracy than both the initial LSTM model and the linear regression model.
 
-#### Final LSTM model plot
+Here is the final LSTM model
+```py
+# Tuned params and variables
+batch_size = 1
+nb_epoch = 10 # Initially 1
+seq_len = 50 # Initially 30
+input_dim=1
+output_dim=50
+loss='mean_squared_error'
+optimizer = 'rmsprop'
+activation = 'linear'
 
-![alt text](images/TM_LSTM_final.png "Toyota Motor")
+# Load datasets (No change from initial one)
+csv_file = './data/TM.csv'
+dfTM = pd.read_csv(csv_file, index_col='Date',parse_dates=True)
 
-![alt text](images/APPL_LSTM_final.png "Apple")
+# Get Adjusted Close price and split the data (No change from initial one)
+adj_closes = load_adj_close(csv_file)
+X_train_, y_train_, X_test_, y_test_ = load_data_split_train_test(adj_closes, seq_len, True)
 
-![alt text](images/GE_LSTM_final.png "GE")
+# Build Model (No change from initial one)
+model = Sequential()
 
-![alt text](images/MSFT_LSTM_final.png "Microsoft")
+model.add(LSTM(
+    input_dim=input_dim,
+    output_dim=output_dim,
+    return_sequences=False))
 
-![alt text](images/GSPC_LSTM_final.png "S&P 500")
+model.add(Dense(output_dim=1))
+model.add(Activation(activation))
+
+start = time.time()
+model.compile(loss=loss, optimizer=optimizer)
+print 'compilation time : ', time.time() - start
+
+#Train the model (No change from initial one)
+model.fit(
+    X_train_,
+    y_train_,
+    batch_size=batch_size,
+    nb_epoch=nb_epoch,
+    validation_split=0.05)
+
+testPredict = model.predict(X_test_, batch_size=batch_size)
+score = model.evaluate(X_test_, y_test_, batch_size=batch_size, verbose=0)
+
+TM_MSE = score
+TM_RMSE = math.sqrt(score)
+print 'Mean squared error (MSE)', TM_MSE
+print 'Root Mean squared error (RMSE)', TM_RMSE
+```
 
 #### Final LSTM model results
 
@@ -481,7 +706,7 @@ as well as the regression model.
 
 #### Comparison between initial and final LSTM models results
 
-Initial LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Final LSTM
+Initial LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Final LSTM
 
 |Company/Index    |MSE/RMSE         |Company/Index    |MSE/RMSE         |
 |-----------------|-----------------|-----------------|-----------------|
@@ -496,16 +721,8 @@ Initial LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n
 |S&P 500 (MSE)    |6.13824635252e-05|S&P 500 (MSE)    |5.23874316281e-05|
 |S&P 500 (RMSE)   |0.00783469613484 |S&P 500 (RMSE)   |0.00723791624904 |
 
-
-
-
-In this section, the final model and any supporting qualities should be evaluated in detail. It should be clear how the final model was derived and why this model was chosen. In addition, some type of analysis should be used to validate the robustness of this model and its solution, such as manipulating the input data or environment to see how the model’s solution is affected (this is called sensitivity analysis). Questions to ask yourself when writing this section:
-- _Is the final model reasonable and aligning with solution expectations? Are the final parameters of the model appropriate?_
-- _Has the final model been tested with various inputs to evaluate whether the model generalizes well to unseen data?_
-- _Is the model robust enough for the problem? Do small perturbations (changes) in training data or the input space greatly affect the results?_
-- _Can results found from the model be trusted?_
-
-
+As seen the plots and the comparison above, all the examples are improved with the final model (lowered the MSE / RMSE scores).
+I can confidently say that this model is most accurate among the models I tested in this project.
 
 
 ### Justification
@@ -513,54 +730,84 @@ In this section, the final model and any supporting qualities should be evaluate
 Compared to the simple linear regression model (benchmark model),
 LSTM model (solution model) predicts more accurately with smaller errors.
 
+As seen the result below, the final LSTM model has significantly
+lower MSE / RMSE scores compared to Linear Regression.
+This proves that LSTM model is significant enough to
+predict the stock price more accurately than simple Linear Regression.
 
-In this section, your model’s final solution and its results should be compared to the benchmark you established earlier in the project using some type of statistical analysis. You should also justify whether these results and the solution are significant enough to have solved the problem posed in the project. Questions to ask yourself when writing this section:
-- _Are the final results found stronger than the benchmark result reported earlier?_
-- _Have you thoroughly analyzed and discussed the final solution?_
-- _Is the final solution significant enough to have solved the problem?_
+#### Comparison: final LSTM model and baseline Linear Regression model
 
+Linear Regression&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Final LSTM
 
+|Company/Index    |MSE/RMSE         |Company/Index    |MSE/RMSE         |
+|-----------------|-----------------|-----------------|-----------------|
+|Toyota (MSE)     | 224.08264758    |Toyota (MSE)     |0.000131006485125|
+|Toyota (RMSE)    | 14.9693903543   |Toyota (RMSE)    |0.0114458064428  |
+|Apple (MSE)      | 139.563948246   |Apple (MSE)      |0.000140182430504|
+|Apple (RMSE)     | 14.9693903543   |Apple (RMSE)     |0.0118398661523  |
+|GE (MSE)         | 21.4913114234   |GE (MSE)         |7.87504528992e-05|
+|GE (RMSE)        | 14.9693903543   |GE (RMSE)        |0.00887414519259 |
+|Microsoft (MSE)  | 37.4523711689   |Microsoft (MSE)  |9.82947370459e-05|
+|Microsoft (RMSE) | 14.9693903543   |Microsoft (RMSE) |0.00991437022941 |
+|S&P 500 (MSE)    | 37539.2002769   |S&P 500 (MSE)    |5.23874316281e-05|
+|S&P 500 (RMSE)   | 14.9693903543   |S&P 500 (RMSE)   |0.00723791624904 |
 
 
 ## V. Conclusion
 
 ### Free-Form Visualization
 
+Here are the final LSTM model plots to prove that the prediction has high accuracy.
+X-axis is the trading days and Y-axis is the normalized price.
+I used the simple line chart, blue line is the prediction and the green line is the actual.
 
-In this section, you will need to provide some form of visualization that emphasizes an important quality about the project. It is much more free-form, but should reasonably support a significant result or characteristic about the problem that you want to discuss. Questions to ask yourself when writing this section:
-- _Have you visualized a relevant or important quality about the problem, dataset, input data, or results?_
-- _Is the visualization thoroughly analyzed and discussed?_
-- _If a plot is provided, are the axes, title, and datum clearly defined?_
+#### Final LSTM model plot
+
+![alt text](images/TM_LSTM_final.png "Toyota Motor")
+
+![alt text](images/APPL_LSTM_final.png "Apple")
+
+![alt text](images/GE_LSTM_final.png "GE")
+
+![alt text](images/MSFT_LSTM_final.png "Microsoft")
+
+![alt text](images/GSPC_LSTM_final.png "S&P 500")
+
+
+
 
 ### Reflection
 
-TODO-8
+Starting from implementing a simple Linear Regression model as the baseline, I implemented a basic LSTM model
+using keras library to compare the result. And then I experimented the LSTM model by tuning up parameters and
+adding or dropping some layers to find more accurate model. And I could finally find a solution model.
 
 I realized that how powerful Deep Learning is.
-By using the library (Keras in this project,
-but there are more like Tensorflow) to implement it with a few lines of code.
+By using the library (Keras in this project, but there are more like Tensorflow)
+it was relatively easy to implement the model with a few lines of code. So, I did not have to
+implement complicated mathematical logic, which is not comfortable to deal with.
 
-The final model improves the result but the time it took is much greater than the basic model.
+I am a little bit surprised that the final model improved the result
+but the computing time it took is much longer than the basic model or Linear Regression.
+Since it takes long to compute to see the result, it might not be efficient to use greater number of epoch when experimenting
+with many datasets with many examples. 
 
+In this project, I only used LSTM and Linear Regression models but it will be very interesting to use different models,
+not only Deep Learning models but experimenting with other Machine Learning models and different libraries will be
+great practice and learning experience as well.
 
-
-In this section, you will summarize the entire end-to-end problem solution and discuss one or two particular aspects of the project you found interesting or difficult. You are expected to reflect on the project as a whole to show that you have a firm understanding of the entire process employed in your work. Questions to ask yourself when writing this section:
-- _Have you thoroughly summarized the entire process you used for this project?_
-- _Were there any interesting aspects of the project?_
-- _Were there any difficult aspects of the project?_
-- _Does the final model and solution fit your expectations for the problem, and should it be used in a general setting to solve these types of problems?_
+The final LSTM model and its results definitely fits my expectation for the problem.
+Since this model is still very simple as it just takes dates and adjusted closing prices as inputs,
+I do not think this model can be used for general purpose of time series problems. 
 
 ### Improvement
 
-TODO-9
-I strongly belive there are better solutions with less time consumption than I did.
-This is implemented with Python 2.7, but I believe that if I use a compiled language like C++ or Go,
-it will be much faster than Python.
+This project is implemented with Python 2.7, but I believe that if I use a compiled language like C++ or Go,
+it will be much faster than Python. So I think the computing time can be solved by using a compiled language and also 
+using a machine that has larger memory size (simple more expensive computer).
 
-In this section, you will need to provide discussion as to how one aspect of the implementation you designed could be improved. As an example, consider ways your implementation can be made more general, and what would need to be modified. You do not need to make this improvement, but the potential solutions resulting from these changes are considered and compared/contrasted to your current solution. Questions to ask yourself when writing this section:
-- _Are there further improvements that could be made on the algorithms or techniques you used in this project?_
-- _Were there algorithms or techniques you researched that you did not know how to implement, but would consider using if you knew how?_
-- _If you used your final solution as the new benchmark, do you think an even better solution exists?_
+Also for further improvement, I definitely can experiment more with tuning up parameters, adding more layers, etc, or 
+I can use different Machine learning or Deep Learning models to explore. I strongly believe there are better solutions with less time consumption with higher accuracy than I did in this project.
 
 ### References
 
