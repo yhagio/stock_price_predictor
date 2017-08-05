@@ -373,6 +373,12 @@ which one produces better results (Lower MSE / RMSE score). I experimented with 
 
 ![alt text](images/TM_experiment_7.png "Toyota Motor 7")
 
+**Experiment results comparison**
+
+| Time         | MSE/RMSE |
+|--------------|----------|
+| Experiment 1 |          |
+
 
 In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
 - _Has an initial solution been found and clearly reported?_
@@ -422,7 +428,8 @@ In this section, the final model and any supporting qualities should be evaluate
 
 ### Justification
 
-Compared to the simple linear regression model (benchmark model), LSTM model (solution model) predicts better.
+Compared to the simple linear regression model (benchmark model),
+LSTM model (solution model) predicts more accurately with smaller errors.
 
 
 In this section, your model’s final solution and its results should be compared to the benchmark you established earlier in the project using some type of statistical analysis. You should also justify whether these results and the solution are significant enough to have solved the problem posed in the project. Questions to ask yourself when writing this section:
