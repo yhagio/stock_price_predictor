@@ -366,8 +366,8 @@ TM_RMSE = math.sqrt(score)
 
 #### Comparison of resultst of Basic LSTM results and Linear Regression
 
-| LSTM                              | Linear Regression                 |
-|-----------------------------------|-----------------------------------|
+LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Linear Regression
+
 |Company/Index    |MSE/RMSE         |Company/Index    |MSE/RMSE         |
 |-----------------|-----------------|-----------------|-----------------|
 |Toyota (MSE)     |0.000143752868767|Toyota (MSE)     | 224.08264758    |
@@ -481,8 +481,8 @@ as well as the regression model.
 
 #### Comparison between initial and final LSTM models results
 
-| Initial LSTM                      | Final LSTM                        |
-|-----------------------------------|-----------------------------------|
+Initial LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Final LSTM
+
 |Company/Index    |MSE/RMSE         |Company/Index    |MSE/RMSE         |
 |-----------------|-----------------|-----------------|-----------------|
 |Toyota (MSE)     |0.000143752868767|Toyota (MSE)     |0.000131006485125|
