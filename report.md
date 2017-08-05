@@ -1,7 +1,14 @@
+<style>
+    td, th {
+        border: 1px solid #dfdfdf;
+        padding: 2px;
+    }
+</style>
+
 # Machine Learning Engineer Nanodegree
 ## Capstone Project
 Yuichi Hagio
-July 30, 2017
+Aug 05, 2017
 
 ## I. Definition
 
@@ -26,6 +33,7 @@ that can affect the stock prices (i.e. people's emotion, natural disasters, etc)
 but I believe that I can predict whether the closing price goes up or down by
 applying machine learning techniques and algorithm from the historical data set for this project. 
 
+<div style="page-break-after: always;"></div>
 
 ### Metrics
 
@@ -55,6 +63,8 @@ It measures the average magnitude of the error and ranges from 0 to infinity.
 The errors are squared and then they are averaged,
 MSE/RMSE gives a relatively high weight to large errors, and the errors in stock price prediction
 can be critical, so it is appropriate metric to penalize the large errors.
+
+<div style="page-break-after: always;"></div>
 
 
 ## II. Analysis
@@ -99,6 +109,7 @@ All the dataset has following columns: <br />
 
 The dataset is straight forward and there is no missing value in each column.
 
+<div style="page-break-after: always;"></div>
 
 
 ### Exploratory Visualization
@@ -113,6 +124,8 @@ so that it is easily understandable how the stock price is moving each day.
 
 ![alt text](images/tm_data_viz.png "Toyota Motor")
 
+
+<div style="page-break-after: always;"></div>
 
 
 ### Algorithms and Techniques
@@ -132,6 +145,7 @@ Since I use the time series of data of stock prices and try to predict the price
 LSTM looks good fits for this project.
 
 
+<div style="page-break-after: always;"></div>
 
 
 
@@ -156,6 +170,7 @@ Also, by visualizing the actual price and the prediction, it can be compared vis
 
 
 
+<div style="page-break-after: always;"></div>
 
 
 ## III. Methodology
@@ -176,6 +191,9 @@ into training and testing sets. That's it for data preparation for the baseline 
 For LSTM model,
 I normalized the Adjusted Closing Prices to improve the convergence.
 I used LSTM from Keras library with Tensorflow backend.
+
+<div style="page-break-after: always;"></div>
+
 
 I created helper functions for loading datasets when using LSTM model as explained below:
 
@@ -236,6 +254,9 @@ def normalize_windows(window_data):
     return normalised_data
 ```
 
+<div style="page-break-after: always;"></div>
+
+
 ### Implementation
 
 **Baseline - Linear Regression model**
@@ -262,17 +283,17 @@ regr.fit(X_train[:int(len(data)*0.9)], y_train[:int(len(data)*0.9)])
 TM_MSE = np.mean((regr.predict(X_test) - y_test) ** 2)
 TM_RMSE = sqrt(TM_MSE)
 ```
+
+
 #### Linear Regression plot
 
-![alt text](images/TM_Linear_Regression.png "Toyota Motor")
+<img src="images/TM_Linear_Regression.png" width="450">
+<img src="images/APPL_Linear_Regression.png" width="450">
 
-![alt text](images/APPL_Linear_Regression.png "Apple")
+<img src="images/GE_Linear_Regression.png" width="450">
+<img src="images/MSFT_Linear_Regression.png" width="450">
 
-![alt text](images/GE_Linear_Regression.png "GE")
-
-![alt text](images/MSFT_Linear_Regression.png "Microsoft")
-
-![alt text](images/GSPC_Linear_Regression.png "S&P 500")
+<img src="images/GSPC_Linear_Regression.png" width="450">
 
 #### Linear Regression results (MSE/RMSE)
 |Company/Index    |MSE/RMSE         |
@@ -287,6 +308,8 @@ TM_RMSE = sqrt(TM_MSE)
 |Microsoft (RMSE) | 14.9693903543   |
 |S&P 500 (MSE)    | 37539.2002769   |
 |S&P 500 (RMSE)   | 14.9693903543   |
+
+<div style="page-break-after: always;"></div>
 
 **The solution - Initial LSTM model**
 
@@ -371,6 +394,8 @@ TM_RMSE = math.sqrt(score)
 |S&P 500 (MSE)    |6.13824635252e-05|
 |S&P 500 (RMSE)   |0.00783469613484 |
 
+<div style="page-break-after: always;"></div>
+
 #### Comparison of results of Basic LSTM results and Linear Regression
 
 LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Linear Regression
@@ -394,6 +419,9 @@ from the MSE / RMSE results for each dataset.
 For example, comparing Toyota dataset, LSTM model's RMSE is 0.0119896984435 and Linear Regression's is
 14.9693903543. LSTM model predicts about 1248% more accurate (RMSE of Linear Regression divided by RMSE of LSTM).
 
+<div style="page-break-after: always;"></div>
+
+
 ### Refinement
 
 Since I do not know what parameters to tune up or how many layers to add or drop in order to
@@ -405,7 +433,11 @@ which one produces better results (Lower MSE / RMSE score).
 I experimented with just Toyota datasets since it is time consuming and
 does not really make sense to apply the same algorithm and
 the technique to all the datasets (Apple, GE, Microsoft, S&P 500) to see
-the effectiveness. One dataset is enough.
+the effectiveness. One dataset is enough. 
+
+There are total of 7 experiments.
+
+<div style="page-break-after: always;"></div>
 
 **Experiment-1**
 
@@ -433,6 +465,8 @@ model.add(Activation(activation))
 ```
 
 ![alt text](images/TM_experiment_1.png "Toyota Motor 1")
+
+<div style="page-break-after: always;"></div>
 
 **Experiment-2**
 
@@ -470,6 +504,8 @@ model.add(Activation(activation))
 
 ![alt text](images/TM_experiment_2.png "Toyota Motor 2")
 
+<div style="page-break-after: always;"></div>
+
 **Experiment-3**
 
 ```py
@@ -505,6 +541,8 @@ model.add(Activation(activation))
 
 ![alt text](images/TM_experiment_3.png "Toyota Motor 3")
 
+<div style="page-break-after: always;"></div>
+
 **Experiment-4**
 
 ```py
@@ -531,6 +569,8 @@ model.add(Activation(activation))
 ```
 
 ![alt text](images/TM_experiment_4.png "Toyota Motor 4")
+
+<div style="page-break-after: always;"></div>
 
 **Experiment-5**
 
@@ -559,6 +599,8 @@ model.add(Activation(activation))
 
 ![alt text](images/TM_experiment_5.png "Toyota Motor 5")
 
+<div style="page-break-after: always;"></div>
+
 **Experiment-6**
 
 ```py
@@ -586,6 +628,8 @@ model.add(Activation(activation))
 
 ![alt text](images/TM_experiment_6.png "Toyota Motor 6")
 
+<div style="page-break-after: always;"></div>
+
 **Experiment-7**
 
 ```py
@@ -601,6 +645,8 @@ output_dim = 50           # Output dimension, no change
 ```
 
 ![alt text](images/TM_experiment_7.png "Toyota Motor 7")
+
+<div style="page-break-after: always;"></div>
 
 **Experiment results comparison**
 
@@ -627,6 +673,7 @@ effective for improvement. So keeping the simple model and with small batch size
 
 I can apply this algorithm to other datasets as well.
 
+<div style="page-break-after: always;"></div>
 
 ## IV. Results
 
@@ -687,6 +734,8 @@ print 'Mean squared error (MSE)', TM_MSE
 print 'Root Mean squared error (RMSE)', TM_RMSE
 ```
 
+<div style="page-break-after: always;"></div>
+
 #### Final LSTM model results
 
 |Company/Index    |MSE/RMSE         |
@@ -724,6 +773,8 @@ Initial LSTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n
 As seen the plots and the comparison above, all the examples are improved with the final model (lowered the MSE / RMSE scores).
 I can confidently say that this model is most accurate among the models I tested in this project.
 
+<div style="page-break-after: always;"></div>
+
 
 ### Justification
 
@@ -753,6 +804,8 @@ Linear Regression&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb
 |S&P 500 (RMSE)   | 14.9693903543   |S&P 500 (RMSE)   |0.00723791624904 |
 
 
+<div style="page-break-after: always;"></div>
+
 ## V. Conclusion
 
 ### Free-Form Visualization
@@ -774,7 +827,7 @@ I used the simple line chart, blue line is the prediction and the green line is 
 ![alt text](images/GSPC_LSTM_final.png "S&P 500")
 
 
-
+<div style="page-break-after: always;"></div>
 
 ### Reflection
 
@@ -800,6 +853,8 @@ The final LSTM model and its results definitely fits my expectation for the prob
 Since this model is still very simple as it just takes dates and adjusted closing prices as inputs,
 I do not think this model can be used for general purpose of time series problems. 
 
+<div style="page-break-after: always;"></div>
+
 ### Improvement
 
 This project is implemented with Python 2.7, but I believe that if I use a compiled language like C++ or Go,
@@ -808,6 +863,8 @@ using a machine that has larger memory size (simple more expensive computer).
 
 Also for further improvement, I definitely can experiment more with tuning up parameters, adding more layers, etc, or 
 I can use different Machine learning or Deep Learning models to explore. I strongly believe there are better solutions with less time consumption with higher accuracy than I did in this project.
+
+<div style="page-break-after: always;"></div>
 
 ### References
 

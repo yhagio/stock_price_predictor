@@ -1,10 +1,5 @@
 # Stock price predictor
 
-To open Jupyter Notebook
-```
-export BROWSER=open && jupyter notebook
-```
-
 ### Environment, Libraries used
 - Aanconda (Mac)
 - Python 2.7
@@ -14,6 +9,11 @@ export BROWSER=open && jupyter notebook
 - Matplotlib
 - Keras
 - Jupyter notebook
+
+To open Jupyter Notebook
+```
+export BROWSER=open && jupyter notebook
+```
 
 ### Datasets
 
@@ -32,3 +32,13 @@ export BROWSER=open && jupyter notebook
 ### Report
 - [Report (.md)](./report.md)
 - [Report (.pdf)](./report.pdf)
+
+
+#### Notes
+
+To convert markdown to pdf (Use Node.js version 6 or above)
+```sh
+npm i            # Install dependency
+npm run proposal # Create proposal.pdf from proposal.md
+npm run report   # Create report.pdf from report.md
+```

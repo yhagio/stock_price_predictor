@@ -1,18 +1,18 @@
 {
   "name": "capstone",
   "version": "1.0.0",
-  "description": "This is only used to conver markdown to pdf",
+  "description": "This is only used to convert markdown to pdf",
   "scripts": {
-    "preproposal": "rm proposal.pdf",
+    "preproposal": "rm -f proposal.pdf",
     "proposal": "node proposal.js",
-    "prereport": "rm report.pdf",
+    "prereport": "rm -f report.pdf",
     "report": "node report.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yhagio/stock_price_predictor.git"
   },
-  "author": "",
+  "author": "Yuichi Hagio",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/yhagio/stock_price_predictor/issues"
